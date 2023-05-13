@@ -1,21 +1,20 @@
-import { component$ } from "@builder.io/qwik";
-import { DocumentHead, routeAction$ } from "@builder.io/qwik-city";
+import { component$,useSignal,useVisibleTask$ } from "@builder.io/qwik";
+import { DocumentHead, Form, routeAction$ } from "@builder.io/qwik-city";
+ const movieApiKey = ('MOVIE_API')
 
-const movieApiKey = ""
 
-
-type Movie ={
-  Title: string,
-  Year:string,
-  imdbID:string,
+type Movie = {
+  Title: string;
+  Year:string;
+  imdbID:string;
   Type:string,
   Poster: string
 }
 
 
 export const useGetMovies = routeAction$(async(values) => {
-  const url = `http://www.ombdapi.com/?apikey=${movieApiKey}&s=${value.search}`;
-  const res = await fetch(url);
+  const url = `http://www.omdbapi.com/?apikey=${movieApiKey}&s=${values.search}`;
+  const res =  await fetch(url);
   const data = await res.json();
 
   const list =  data.Search as Movie[];
@@ -26,9 +25,35 @@ export const useGetMovies = routeAction$(async(values) => {
 })
 
 export default component$(() => {
+    const defaultMovie = useSignal("shrek");
+    const movies = useGetMovies();
+    
+
+    useVisibleTask$(() =>{
+        document.querySelector("button")?.click();
+    });
  
     return (
       <>
+
+      <Form action={movies}>
+        <input  name="search" type="text" value={defaultMovie.value} />
+        <button>search</button>
+      </Form>
+      
+      {movies.value?.movies? (
+        <ul>
+            {movies.value.movies?.map((movie) => (
+                <li key={movie.imdbID}>
+                    <img src={movie.Poster} alt={movie.Title}  />
+                    <p>{movie.Title}</p>
+                </li>
+            ))}
+
+        </ul>
+      ):(
+        <p>no movies found</p>
+      )}
 
       </>
     );
