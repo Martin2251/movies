@@ -1,11 +1,14 @@
-import { component$ } from '@builder.io/qwik';
-import type { DocumentHead} from '@builder.io/qwik-city';
+import { component$, useSignal } from '@builder.io/qwik';
+import { DocumentHead, routeAction$} from '@builder.io/qwik-city';
 import { Link } from '@builder.io/qwik-city';
 import { QwikLogo } from '~/components/starter/icons/qwik';
 
 
 
+
+
 export default component$(() => {
+ 
   return (
     <>
 <h1>Movie app</h1>
